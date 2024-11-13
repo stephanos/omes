@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/antithesishq/antithesis-sdk-go/assert"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/temporalio/omes/cmd/cmdoptions"
@@ -145,6 +146,7 @@ func (r *scenarioRunner) run(ctx context.Context) error {
 	}
 	err = scenario.Executor.Run(ctx, scenarioInfo)
 	if err != nil {
+		assert.Unreachable("failed scenario", map[string]any{"err": err})
 		return fmt.Errorf("failed scenario: %w", err)
 	}
 	return nil

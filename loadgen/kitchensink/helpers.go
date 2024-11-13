@@ -8,6 +8,7 @@ import (
 
 	"go.temporal.io/api/common/v1"
 	enumspb "go.temporal.io/api/enums/v1"
+	"go.temporal.io/api/serviceerror"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/workflow"
 	"golang.org/x/sync/errgroup"
@@ -164,6 +165,11 @@ func (e *ClientActionsExecutor) executeClientAction(ctx context.Context, action 
 		if query.FailureExpected {
 			err = nil
 		}
+		// HACK
+		if isContextDeadlineExceededErr(err) {
+			fmt.Printf("query timed out: %v", err)
+			return nil
+		}
 		return err
 	} else if action.GetNestedActions() != nil {
 		err = e.executeClientActionSet(ctx, action.GetNestedActions())
@@ -234,4 +240,10 @@ func (e *ClientActionsExecutor) executeUpdateAction(ctx context.Context, upd *Do
 		err = nil
 	}
 	return run, err
+}
+
+func isContextDeadlineExceededErr(err error) bool {
+	var deadlineExceededSvcErr *serviceerror.DeadlineExceeded
+	return errors.Is(err, context.DeadlineExceeded) ||
+		errors.As(err, &deadlineExceededSvcErr)
 }

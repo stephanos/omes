@@ -57,9 +57,6 @@ func (t *tpsExecutor) Run(ctx context.Context, info loadgen.ScenarioInfo) error 
 		info.Logger.Infof("Search Attribute %s added", ThroughputStressScenarioIdSearchAttribute)
 	}
 
-	// HACK: make sure the search attribute is registered
-	time.Sleep(5 * time.Second)
-
 	// Complain if there are already existing workflows with the provided run id
 	visibilityCount, err := info.Client.CountWorkflow(ctx, &workflowservice.CountWorkflowExecutionsRequest{
 		Namespace: info.Namespace,
