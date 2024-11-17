@@ -130,15 +130,15 @@ struct ActionChances {
 impl Default for ActionChances {
     fn default() -> Self {
         Self {
-            timer: 25.0,
-            activity: 25.0,
-            child_workflow: 25.0,
-            nested_action_set: 12.5,
-            patch_marker: 2.5,
-            set_workflow_state: 2.5,
-            await_workflow_state: 2.5,
-            upsert_memo: 2.5,
-            upsert_search_attributes: 2.5,
+            timer: 100.0,
+            activity: 0.0,
+            child_workflow: 0.0,
+            nested_action_set: 0.0,
+            patch_marker: 0.0,
+            set_workflow_state: 0.0,
+            await_workflow_state: 0.0,
+            upsert_memo: 0.0,
+            upsert_search_attributes: 0.0,
         }
     }
 }
@@ -396,10 +396,10 @@ impl<'a> Arbitrary<'a> for ClientAction {
             u.int_in_range(0..=2)?
         };
         let variant = match action_kind {
-            0 => client_action::Variant::DoSignal(u.arbitrary()?),
-            1 => client_action::Variant::DoQuery(u.arbitrary()?),
-            2 => client_action::Variant::DoUpdate(u.arbitrary()?),
-            3 => client_action::Variant::NestedActions(u.arbitrary()?),
+//             0 => client_action::Variant::DoSignal(u.arbitrary()?),
+//             1 => client_action::Variant::DoQuery(u.arbitrary()?),
+            _ => client_action::Variant::DoUpdate(u.arbitrary()?),
+//             3 => client_action::Variant::NestedActions(u.arbitrary()?),
             _ => unreachable!(),
         };
         Ok(Self {
