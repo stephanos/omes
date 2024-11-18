@@ -144,11 +144,11 @@ func (r *scenarioRunner) run(ctx context.Context) error {
 		Namespace:       r.clientOptions.Namespace,
 		RootPath:        rootDir(),
 	}
-	assert.Sometimes(true, "[wkl] Omes scenario",
+	assert.Sometimes(true, "[WKL] Omes scenario",
 		map[string]any{"scenario": scenarioInfo.ScenarioName})
 	err = scenario.Executor.Run(ctx, scenarioInfo)
 	if err != nil {
-		assert.Unreachable("[wkl] Omes scenario failed", map[string]any{"err": err})
+		assert.Unreachable("[WKL] Omes scenario failed", map[string]any{"err": err})
 		return fmt.Errorf("failed scenario: %w", err)
 	}
 	return nil
