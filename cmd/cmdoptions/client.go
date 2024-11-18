@@ -7,13 +7,17 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/spf13/pflag"
 	"go.temporal.io/api/common/v1"
+	"go.temporal.io/api/serviceerror"
+	"go.temporal.io/api/workflowservice/v1"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/converter"
 	"go.uber.org/zap"
+	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 const AUTH_HEADER_ENV_VAR = "TEMPORAL_OMES_AUTH_HEADER"
@@ -117,6 +121,20 @@ func (c *ClientOptions) Dial(metrics *Metrics, logger *zap.SugaredLogger) (clien
 		converter.NewJSONPayloadConverter(),
 	)
 	clientOptions.DataConverter = dataConverter
+
+	nsclient, err := client.NewNamespaceClient(clientOptions)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create namespace client: %w", err)
+	}
+	err = nsclient.Register(context.Background(), &workflowservice.RegisterNamespaceRequest{
+		Namespace:                        c.Namespace,
+		WorkflowExecutionRetentionPeriod: durationpb.New(1 * 24 * time.Hour),
+	})
+	if err != nil {
+		if _, ok := err.(*serviceerror.NamespaceAlreadyExists); !ok {
+			panic(err)
+		}
+	}
 
 	client, err := client.Dial(clientOptions)
 	if err != nil {
