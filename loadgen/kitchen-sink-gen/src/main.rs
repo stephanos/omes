@@ -117,28 +117,28 @@ struct OutputConfig {
 /// 100.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 struct ActionChances {
-    timer: 25.0,
-    activity: 25.0,
-    child_workflow: 25.0,
-    nested_action_set: 12.5,
-    patch_marker: 2.5,
-    set_workflow_state: 2.5,
-    await_workflow_state: 2.5,
-    upsert_memo: 2.5,
-    upsert_search_attributes: 2.5,
+    timer: f32,
+    activity: f32,
+    child_workflow: f32,
+    patch_marker: f32,
+    set_workflow_state: f32,
+    await_workflow_state: f32,
+    upsert_memo: f32,
+    upsert_search_attributes: f32,
+    nested_action_set: f32,
 }
 impl Default for ActionChances {
     fn default() -> Self {
         Self {
-            timer: 100.0,
-            activity: 0.0,
-            child_workflow: 0.0,
-            nested_action_set: 0.0,
-            patch_marker: 0.0,
-            set_workflow_state: 0.0,
-            await_workflow_state: 0.0,
-            upsert_memo: 0.0,
-            upsert_search_attributes: 0.0,
+            timer: 25.0,
+            activity: 25.0,
+            child_workflow: 25.0,
+            nested_action_set: 12.5,
+            patch_marker: 2.5,
+            set_workflow_state: 2.5,
+            await_workflow_state: 2.5,
+            upsert_memo: 2.5,
+            upsert_search_attributes: 2.5,
         }
     }
 }

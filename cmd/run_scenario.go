@@ -85,7 +85,13 @@ func (r *scenarioRunConfig) addCLIFlags(fs *pflag.FlagSet) {
 			"If the search attributes are not registed by the scenario they must be registered through some other method")
 }
 
-func (r *scenarioRunner) run(ctx context.Context) error {
+func (r *scenarioRunner) run(ctx context.Context) (retErr error) {
+	defer func() {
+		if retErr != nil {
+			assert.Unreachable("[WKL] Omes scenario failed", map[string]any{})
+		}
+	}()
+
 	if r.logger == nil {
 		r.logger = r.loggingOptions.MustCreateLogger()
 	}
@@ -146,11 +152,5 @@ func (r *scenarioRunner) run(ctx context.Context) error {
 	}
 	assert.Sometimes(true, "[WKL] Omes scenario",
 		map[string]any{"scenario": scenarioInfo.ScenarioName})
-	err = scenario.Executor.Run(ctx, scenarioInfo)
-	if err != nil {
-		assert.Unreachable("[WKL] Omes scenario failed",
-			map[string]any{"err": err.Error(), "scenario": scenarioInfo.ScenarioName})
-		return fmt.Errorf("failed scenario: %w", err)
-	}
-	return nil
+	return scenario.Executor.Run(ctx, scenarioInfo)
 }
