@@ -87,7 +87,7 @@ func (r *scenarioRunConfig) addCLIFlags(fs *pflag.FlagSet) {
 
 func (r *scenarioRunner) run(ctx context.Context) (retErr error) {
 	defer func() {
-		assert.Always(retErr == nil, "[WKL] Omes scenario failed", map[string]any{"error": retErr})
+		assert.Always(retErr == nil, "[WKL] Omes scenario succeeded", map[string]any{"error": retErr})
 	}()
 
 	if r.logger == nil {
