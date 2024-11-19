@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/antithesishq/antithesis-sdk-go/assert"
 	"go.temporal.io/api/enums/v1"
 	"go.temporal.io/api/operatorservice/v1"
 	"go.temporal.io/api/serviceerror"
@@ -32,6 +33,8 @@ type tpsExecutor struct {
 }
 
 func (t *tpsExecutor) Run(ctx context.Context, info loadgen.ScenarioInfo) error {
+	assert.Sometimes(true, "[WKL] Omes throughput test", map[string]any{})
+
 	// Make sure the search attribute is registered
 	attribMap := map[string]enums.IndexedValueType{
 		ThroughputStressScenarioIdSearchAttribute: enums.INDEXED_VALUE_TYPE_KEYWORD,
