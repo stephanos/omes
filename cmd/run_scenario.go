@@ -148,7 +148,8 @@ func (r *scenarioRunner) run(ctx context.Context) error {
 		map[string]any{"scenario": scenarioInfo.ScenarioName})
 	err = scenario.Executor.Run(ctx, scenarioInfo)
 	if err != nil {
-		assert.Unreachable("[WKL] Omes scenario failed", map[string]any{"err": err})
+		assert.Unreachable("[WKL] Omes scenario failed",
+			map[string]any{"err": err.Error(), "scenario": scenarioInfo.ScenarioName})
 		return fmt.Errorf("failed scenario: %w", err)
 	}
 	return nil
