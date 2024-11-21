@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/antithesishq/antithesis-sdk-go/assert"
 	"github.com/nexus-rpc/sdk-go/nexus"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/temporalnexus"
@@ -41,6 +42,7 @@ var WaitForCancelOperation = temporalnexus.NewWorkflowRunOperation("wait-for-can
 func MustCreateNexusService() *nexus.Service {
 	service := nexus.NewService(ThroughputStressServiceName)
 	err := service.Register(EchoSyncOperation, EchoAsyncOperation, WaitForCancelOperation)
+	assert.Always(err == nil, "[WKL] Omes Nexus registered successfully", map[string]any{"err": err})
 	if err != nil {
 		panic(fmt.Sprintf("failed to register operations: %v", err))
 	}

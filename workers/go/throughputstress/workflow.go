@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/antithesishq/antithesis-sdk-go/assert"
 	"github.com/nexus-rpc/sdk-go/nexus"
 	"github.com/temporalio/omes/loadgen/throughputstress"
 	"github.com/temporalio/omes/scenarios"
@@ -229,10 +230,13 @@ func runEchoNexusOperation(ctx workflow.Context, params *throughputstress.Workfl
 		workflow.NexusOperationOptions{},
 	)
 	var output string
-	if err := fut.Get(ctx, &output); err != nil {
+	err := fut.Get(ctx, &output)
+	assert.Always(err == nil, "[WKL] Omes Nexus Get operation succeeds", map[string]any{"err": err})
+	if err != nil {
 		return err
 	}
 	if output != "hello" {
+		assert.Always(output == "hello", "[WKL] Omes Nexus Get operation result correct", map[string]any{"output": output})
 		return fmt.Errorf(`expected "hello", got %q`, output)
 	}
 	return nil
