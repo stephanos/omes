@@ -235,8 +235,8 @@ func runEchoNexusOperation(ctx workflow.Context, params *throughputstress.Workfl
 	if err != nil {
 		return err
 	}
+	assert.Always(output == "hello", "[WKL] Omes Nexus Get operation result correct", map[string]any{"output": output})
 	if output != "hello" {
-		assert.Always(output == "hello", "[WKL] Omes Nexus Get operation result correct", map[string]any{"output": output})
 		return fmt.Errorf(`expected "hello", got %q`, output)
 	}
 	return nil
