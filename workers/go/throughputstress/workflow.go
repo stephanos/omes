@@ -140,6 +140,14 @@ func ThroughputStressWorkflow(ctx workflow.Context, params *throughputstress.Wor
 				return workflow.ExecuteLocalActivity(localActCtx, activityStub.SelfSignal, ASignal).Get(ctx, nil)
 			},
 			func(ctx workflow.Context) error {
+				actInput := MakeSleepInput(params.SleepActivityDistribution)
+				if actInput == nil {
+					return nil
+				}
+				actCtx := workflow.WithActivityOptions(ctx, defaultActivityOpts())
+				return workflow.ExecuteActivity(actCtx, activityStub.Sleep, actInput).Get(ctx, nil)
+			},
+			func(ctx workflow.Context) error {
 				actCtx := workflow.WithActivityOptions(ctx, defaultActivityOpts())
 				if params.SkipSleep {
 					return nil

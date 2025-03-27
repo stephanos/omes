@@ -19,10 +19,11 @@ import (
 
 // --option arguments
 const (
-	IterFlag          = "internal-iterations"
-	SkipSleepFlag     = "skip-sleep"
-	CANEventFlag      = "continue-as-new-after-event-count"
-	NexusEndpointFlag = "nexus-endpoint"
+	IterFlag                      = "internal-iterations"
+	SkipSleepFlag                 = "skip-sleep"
+	CANEventFlag                  = "continue-as-new-after-event-count"
+	NexusEndpointFlag             = "nexus-endpoint"
+	ActivitySleepDistributionFlag = "activity-sleep-distribution"
 )
 
 const ThroughputStressScenarioIdSearchAttribute = "ThroughputStressScenarioId"
@@ -82,10 +83,15 @@ func (t *tpsExecutor) Run(ctx context.Context, info loadgen.ScenarioInfo) error 
 			nexusEndpoint := run.ScenarioInfo.ScenarioOptions[NexusEndpointFlag]
 			skipSleep := run.ScenarioInfo.ScenarioOptionBool(SkipSleepFlag, false)
 			timeout := time.Duration(1*internalIterations) * time.Minute
+			sleepActivityDistribution, err := throughputstress.ParseSleepActivityDistribution(
+				run.ScenarioInfo.ScenarioOptions[ActivitySleepDistributionFlag])
+			if err != nil {
+				return fmt.Errorf("failed to parse %v: %w", ActivitySleepDistributionFlag, err)
+			}
 
 			wfID := fmt.Sprintf("throughputStress-%s-%d", run.RunID, run.Iteration)
 			var result throughputstress.WorkflowOutput
-			err := run.ExecuteAnyWorkflow(ctx,
+			err = run.ExecuteAnyWorkflow(ctx,
 				client.StartWorkflowOptions{
 					ID:                                       wfID,
 					TaskQueue:                                run.TaskQueue(),
@@ -102,6 +108,7 @@ func (t *tpsExecutor) Run(ctx context.Context, info loadgen.ScenarioInfo) error 
 					Iterations:                   internalIterations,
 					ContinueAsNewAfterEventCount: continueAsNewCount,
 					NexusEndpoint:                nexusEndpoint,
+					SleepActivityDistribution:    sleepActivityDistribution,
 				})
 			// The 1 is for the final workflow run
 			t.workflowCount.Add(uint64(result.TimesContinued + result.ChildrenSpawned + 1))
@@ -125,9 +132,8 @@ func (t *tpsExecutor) Run(ctx context.Context, info loadgen.ScenarioInfo) error 
 				ThroughputStressScenarioIdSearchAttribute, info.RunID),
 		},
 		int(totalWorkflowCount),
-		3*time.Minute,
+		3*time.Hour,
 	)
-
 }
 
 func init() {
