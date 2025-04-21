@@ -133,7 +133,7 @@ Please note that the throughput_stress scenario is currently only available for 
 
 ### Sleep Activity per Priority
 
-The throughput_stress scenario can be configured to map every `SleepActivity` to a priority and
+The throughput_stress scenario can be configured to map "Sleep" activities to a priority and
 sleep for a arbitrary amount of time. The configuration is done via a JSON file, which is passed to
 the scenario with the `--option sleep-activity-per-priority-json=@<file>` flag.
 
