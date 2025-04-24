@@ -44,7 +44,10 @@ func MakeSleepInput(distribution throughputstress.SleepActivity) *SleepActivityI
 	if !ok {
 		return nil
 	}
-	return &SleepActivityInput{Priority: int(prio), SleepDuration: sleep}
+	return &SleepActivityInput{
+		Priority:      int(prio),
+		SleepDuration: sleep,
+	}
 }
 
 // Payload serves no purpose other than to accept inputs and return outputs of a
